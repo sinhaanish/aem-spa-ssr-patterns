@@ -109,3 +109,4 @@ dispatcher/src/conf.d/variables/default.vars
 ui.frontend/.env
 ui.frontend/.aio
 ui.frontend/dist/application/
+.claude/
