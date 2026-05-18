@@ -1,0 +1,9 @@
+{
+    "getContentPathPattern": "/content/mysite/(.*)|/conf/mysite/(.*)/settings/wcm/templates/(.*)",
+    "getRemoteHTMLRendererUrl" : "https://644509-433azurechameleon.adobeioruntime.net/api/v1/web/mysite-0.1.0/ssr",
+    "getRequestTimeout": 10000,
+    "getAdditionalRequestHeaders": [
+
+    ],
+    "getCompression": "none"
+}

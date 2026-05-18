@@ -1,0 +1,33 @@
+{
+  "configurations": [
+    {
+      "type": "pwa-node",
+      "name": "Action:mysite-0.1.0/ssr",
+      "request": "launch",
+      "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/wskdebug",
+      "envFile": "${workspaceFolder}//Users/anishsinha/Documents/Customers/SuccessAccelerator/snowflake/new/mysite/ui.frontend/dist/application/.env.local",
+      "timeout": 30000,
+      "killBehavior": "polite",
+      "localRoot": "${workspaceFolder}",
+      "remoteRoot": "/code",
+      "outputCapture": "std",
+      "attachSimplePort": 0,
+      "runtimeArgs": [
+        "mysite-0.1.0/ssr",
+        "${workspaceFolder}/actions/ssr/index.js",
+        "-v",
+        "--disable-concurrency",
+        "--kind",
+        "nodejs:14"
+      ]
+    }
+  ],
+  "compounds": [
+    {
+      "name": "Actions",
+      "configurations": [
+        "Action:mysite-0.1.0/ssr"
+      ]
+    }
+  ]
+}
