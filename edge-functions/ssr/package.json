@@ -4,8 +4,7 @@
   "description": "AEM SPA SSR via Adobe Edge Functions (Fastly Compute JS)",
   "type": "module",
   "scripts": {
-    "prebuild": "cd ../../ui.frontend && npm run build-edge-only && cd -",
-    "build": "aio aem edge-functions build",
+    "build": "js-compute-runtime ./index.js ./bin/main.wasm",
     "deploy": "aio aem edge-functions deploy spa-ssr",
     "serve": "aio aem edge-functions serve --watch",
     "tail-logs": "aio aem edge-functions tail-logs spa-ssr"
