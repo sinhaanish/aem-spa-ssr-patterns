@@ -47,7 +47,7 @@
 // Import the pre-built SSR bundle (CommonJS2, ~427 KB).
 // Built by: cd ui.frontend && npm run build-edge-only
 // esbuild (inside js-compute-runtime) handles CJS interop automatically.
-import ssrBundle from '../../ui.frontend/dist/edge/ssr-bundle.js';
+import ssrBundle from '../../../ui.frontend/dist/edge/ssr-bundle.js';
 
 const { renderToString } = ssrBundle;
 
