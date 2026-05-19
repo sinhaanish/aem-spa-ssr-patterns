@@ -28,10 +28,11 @@ module.exports = {
     // SSR bundle entry — ES-module style, no __ow_* protocol, no pako
     entry: ['./src/server/edge-entry.js'],
 
-    // node = clean CommonJS output, no 'self' chunk-loading shim.
-    // renderToString is pure JS — it doesn't need browser globals at bundle time.
-    // Fastly provides fetch/Request/Response globally at runtime in index.js.
-    target: 'node',
+    // webworker = webpack replaces require("path"), require("stream"), require("fs")
+    // with browser polyfills so esbuild (js-compute-runtime) never sees raw Node.js
+    // require() calls. Fastly's runtime provides 'self' globally so the webpack
+    // chunk-loading bootstrap works fine at runtime.
+    target: 'webworker',
 
     mode: 'production',
 
@@ -54,7 +55,8 @@ module.exports = {
         alias: {
             stream: require.resolve('stream-browserify'),
             buffer: require.resolve('buffer/'),
-            util: require.resolve('util/')
+            util: require.resolve('util/'),
+            path: require.resolve('path-browserify')
         }
     },
 
