@@ -28,20 +28,21 @@ module.exports = {
     // SSR bundle entry — ES-module style, no __ow_* protocol, no pako
     entry: ['./src/server/edge-entry.js'],
 
-    // webworker = browser globals available, no Node.js internals
-    target: 'webworker',
+    // node = clean CommonJS output, no 'self' chunk-loading shim.
+    // renderToString is pure JS — it doesn't need browser globals at bundle time.
+    // Fastly provides fetch/Request/Response globally at runtime in index.js.
+    target: 'node',
 
     mode: 'production',
 
     output: {
         filename: 'ssr-bundle.js',
         path: path.resolve(__dirname, 'dist/edge'),
-        // UMD so the bundle can be required() by the edge function build tool
-        // or imported as a module if the toolchain supports it.
-        library: 'SSRBundle',
-        libraryTarget: 'umd',
-        // Make UMD work in both browser and worker global scopes
-        globalObject: 'typeof self !== "undefined" ? self : this'
+        // commonjs2 — esbuild (used by js-compute-runtime inside aio aem edge-functions build)
+        // handles CJS interop correctly when the edge function imports it as:
+        //   import ssrBundle from './ssr-bundle.js';
+        //   const { renderToString } = ssrBundle;
+        libraryTarget: 'commonjs2'
     },
 
     devtool: 'source-map',

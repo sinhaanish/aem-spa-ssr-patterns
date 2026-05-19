@@ -1,0 +1,30 @@
+---
+# AEM Edge Functions — Service Configuration
+# Deployed via: Cloud Manager Config Pipeline (branch: feature/edge-functions-ssr)
+#
+# After this pipeline runs, the service is registered at:
+#   publish-p50155-e2062060.adobeaemcloud.com  (routed via cdn.yaml originSelectors)
+#
+# Service name rules: max 30 chars, lowercase letters/digits/hyphens,
+#                     must start and end with a letter or digit.
+
+kind: "EdgeFunctions"
+version: "1"
+data:
+  services:
+    - name: spa-ssr
+
+      # Origins this edge function is allowed to call.
+      # The domain here is your AEM publish instance.
+      # Used in index.js as: fetch(req, { backend: 'aem-publish' })
+      origins:
+        - name: aem-publish
+          domain: publish-p50155-e2062060.adobeaemcloud.com
+
+  # Optional: expose config values to the edge function via ConfigStore
+  # Read in code: const config = new ConfigStore('config_default'); config.get('KEY')
+  configs:
+    - key: APP_ROOT_PATH
+      value: /content/mysite/us/en
+    - key: LOG_LEVEL
+      value: info

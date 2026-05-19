@@ -1,42 +1,46 @@
 ---
 # AEM CDN Configuration
 # Deployed via: Cloud Manager Config Pipeline
-# Docs: https://experienceleague.adobe.com/en/docs/experience-manager-cloud-service/
-#       content/implementing/content-delivery/cdn-configuring-traffic
+#
+# Two things configured here:
+#   1. originSelectors — routes SPA HTML pages to the edge function
+#   2. responseHeaderRules — strips debug header on publish tier
 
-kind: "CDN"
-version: "1"
-metadata:
-  envTypes:
-    - dev
-    - stage
-    - prod
-
+kind: 'CDN'
+version: '1'
 data:
-  # ── Response header rules ────────────────────────────────────────────────────
-  # Strip the X-SSR header before it reaches the browser in production
-  # (keep it in dev/stage for debugging)
+
+  # ── Origin Selector Rules ──────────────────────────────────────────────────
+  # Routes matching requests to the edge function instead of AEM publish.
+  # The edge function becomes the "origin" for these URLs — it fetches the
+  # model + shell from AEM publish internally and returns rendered HTML.
+  #
+  # originName format: edgefunction-<service-name-from-edgeFunctions.yaml>
+  originSelectors:
+    rules:
+      - name: route-spa-pages-to-ssr
+        when:
+          allOf:
+            # Only intercept HTML pages under /content/mysite/
+            - reqProperty: path
+              matches: "^/content/mysite/.*\\.html$"
+            # Only GET requests — let POST/PUT through to AEM publish
+            - reqProperty: method
+              equals: GET
+        action:
+          type: selectAemOrigin
+          originName: edgefunction-spa-ssr
+
+  # ── Response Header Rules ──────────────────────────────────────────────────
   responseHeaderRules:
-    - name: "remove-ssr-debug-header-prod"
+    - name: remove-ssr-debug-header-on-prod
       when:
-        reqProperty: tier
-        equals: publish
+        allOf:
+          - reqProperty: tier
+            equals: publish
+          - reqProperty: path
+            matches: "^/content/mysite/.*\\.html$"
       actions:
         - type: unset
           response:
             name: X-SSR
-
-  # ── Cache rules ──────────────────────────────────────────────────────────────
-  # SSR responses should not be cached at CDN edge — each request is personalised
-  # and the edge function handles rendering. AEM publish controls caching via
-  # Dispatcher TTL headers for non-SSR paths.
-  cacheRules:
-    - name: "no-cache-ssr-pages"
-      when:
-        reqProperty: path
-        matches: "^/content/mysite/.*\\.html$"
-      actions:
-        - type: set
-          response:
-            name: Cache-Control
-            value: "no-store, no-cache"
