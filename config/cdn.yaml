@@ -2,45 +2,23 @@
 # AEM CDN Configuration
 # Deployed via: Cloud Manager Config Pipeline
 #
-# Two things configured here:
-#   1. originSelectors — routes SPA HTML pages to the edge function
-#   2. responseHeaderRules — strips debug header on publish tier
+# Routes SPA HTML pages to the edge function via origin selector rules.
 
 kind: 'CDN'
 version: '1'
 data:
 
-  # ── Origin Selector Rules ──────────────────────────────────────────────────
-  # Routes matching requests to the edge function instead of AEM publish.
-  # The edge function becomes the "origin" for these URLs — it fetches the
-  # model + shell from AEM publish internally and returns rendered HTML.
-  #
+  # Routes matching requests to the edge function.
   # originName format: edgefunction-<service-name-from-edgeFunctions.yaml>
   originSelectors:
     rules:
       - name: route-spa-pages-to-ssr
         when:
           allOf:
-            # Only intercept HTML pages under /content/mysite/
             - reqProperty: path
               matches: "^/content/mysite/.*\\.html$"
-            # Only GET requests — let POST/PUT through to AEM publish
             - reqProperty: method
               equals: GET
         action:
           type: selectAemOrigin
           originName: edgefunction-spa-ssr
-
-  # ── Response Header Rules ──────────────────────────────────────────────────
-  responseHeaderRules:
-    - name: remove-ssr-debug-header-on-prod
-      when:
-        allOf:
-          - reqProperty: tier
-            equals: publish
-          - reqProperty: path
-            matches: "^/content/mysite/.*\\.html$"
-      actions:
-        - type: unset
-          response:
-            name: X-SSR
