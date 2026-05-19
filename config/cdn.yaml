@@ -1,0 +1,42 @@
+---
+# AEM CDN Configuration
+# Deployed via: Cloud Manager Config Pipeline
+# Docs: https://experienceleague.adobe.com/en/docs/experience-manager-cloud-service/
+#       content/implementing/content-delivery/cdn-configuring-traffic
+
+kind: "CDN"
+version: "1"
+metadata:
+  envTypes:
+    - dev
+    - stage
+    - prod
+
+data:
+  # ── Response header rules ────────────────────────────────────────────────────
+  # Strip the X-SSR header before it reaches the browser in production
+  # (keep it in dev/stage for debugging)
+  responseHeaderRules:
+    - name: "remove-ssr-debug-header-prod"
+      when:
+        reqProperty: tier
+        equals: publish
+      actions:
+        - type: unset
+          response:
+            name: X-SSR
+
+  # ── Cache rules ──────────────────────────────────────────────────────────────
+  # SSR responses should not be cached at CDN edge — each request is personalised
+  # and the edge function handles rendering. AEM publish controls caching via
+  # Dispatcher TTL headers for non-SSR paths.
+  cacheRules:
+    - name: "no-cache-ssr-pages"
+      when:
+        reqProperty: path
+        matches: "^/content/mysite/.*\\.html$"
+      actions:
+        - type: set
+          response:
+            name: Cache-Control
+            value: "no-store, no-cache"
