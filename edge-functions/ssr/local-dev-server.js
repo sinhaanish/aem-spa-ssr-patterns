@@ -19,6 +19,9 @@
  ~ Change AEM_ORIGIN below to point to your AEM publish instance if preferred.
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
+// express and node-fetch live in ui.frontend/node_modules.
+// Run this server via: npm run start-ssr-edge-local  (from ui.frontend/)
+// which sets NODE_PATH=./node_modules automatically.
 const express = require('express');
 const fetch = require('node-fetch');
 const path = require('path');

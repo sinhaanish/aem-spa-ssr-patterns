@@ -9,6 +9,7 @@
     "build-with-express": "cross-env NODE_OPTIONS=--openssl-legacy-provider react-scripts build && cross-env NODE_OPTIONS=--openssl-legacy-provider webpack --config webpack.config.express.js && clientlib --verbose",
     "build-with-edge": "cross-env NODE_OPTIONS=--openssl-legacy-provider react-scripts build && cross-env NODE_OPTIONS=--openssl-legacy-provider webpack --config webpack.config.edge.js && clientlib --verbose",
     "build-edge-only": "cross-env NODE_OPTIONS=--openssl-legacy-provider webpack --config webpack.config.edge.js",
+    "start-ssr-edge-local": "cross-env NODE_PATH=./node_modules node ../edge-functions/ssr/local-dev-server.js",
     "start-ssr-ioruntime": "cross-env NODE_ENV=development aio app run --local",
     "start-ssr-express": "node dist/express.js",
     "deploy-ssr-ioruntime": "cross-env NODE_ENV=production aio app deploy",
