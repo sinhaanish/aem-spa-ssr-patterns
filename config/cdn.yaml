@@ -1,0 +1,24 @@
+---
+# AEM CDN Configuration
+# Deployed via: Cloud Manager Config Pipeline
+#
+# Routes SPA HTML pages to the edge function via origin selector rules.
+
+kind: 'CDN'
+version: '1'
+data:
+
+  # Routes matching requests to the edge function.
+  # originName format: edgefunction-<service-name-from-edgeFunctions.yaml>
+  originSelectors:
+    rules:
+      - name: route-spa-pages-to-ssr
+        when:
+          allOf:
+            - reqProperty: path
+              matches: "^/content/mysite/.*\\.html$"
+            - reqProperty: method
+              equals: GET
+        action:
+          type: selectAemOrigin
+          originName: edgefunction-spa-ssr

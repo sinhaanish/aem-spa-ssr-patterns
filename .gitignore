@@ -110,3 +110,6 @@ ui.frontend/.env
 ui.frontend/.aio
 ui.frontend/dist/application/
 .claude/
+
+# Track pre-built edge SSR bundle — needed by aio aem edge-functions build
+!ui.frontend/dist/edge/ssr-bundle.js

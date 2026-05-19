@@ -2,6 +2,10 @@
 
 This module implements Server-Side Rendering for an AEM SPA (React) project using **Adobe App Builder (I/O Runtime)**. AEM delegates the SSR render to a serverless action, which returns pre-rendered HTML. The React app then hydrates the existing DOM on the client.
 
+> **Looking for the Edge Functions approach?**  
+> See [`edge-functions/ssr/README.md`](../edge-functions/ssr/README.md) (branch: `feature/edge-functions-ssr`).  
+> Edge Functions run at the CDN layer using Fastly Compute JavaScript and require AEM Edge Functions beta access.
+
 ---
 
 ## Architecture
